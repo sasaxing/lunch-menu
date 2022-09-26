@@ -1,6 +1,10 @@
 <script setup lang="ts">
-import HelloWorld from "./components/HelloWorld.vue";
-import TheWelcome from "./components/TheWelcome.vue";
+import FoodStock from "./components/FoodStock.vue";
+import RecommandedMenu from "./components/RecommandedMenu.vue";
+
+const imageSrc = "/src/assets/hubo.png"; // must be absolute path in the project`
+const imageWidth = 350;
+const imageHeight = 250;
 </script>
 
 <template>
@@ -8,13 +12,17 @@ import TheWelcome from "./components/TheWelcome.vue";
     <img
       alt="Vue logo"
       class="logo"
-      src="./assets/logo.svg"
-      width="125"
-      height="125"
+      :src="imageSrc"
+      :width="imageWidth"
+      :height="imageHeight"
     />
 
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
+    <div class="column">
+      <FoodStock />
+    </div>
+
+    <div class="column">
+      <RecommandedMenu />
     </div>
   </header>
 
@@ -24,6 +32,14 @@ import TheWelcome from "./components/TheWelcome.vue";
 </template>
 
 <style scoped>
+/* Create two equal columns that floats next to each other */
+.column {
+  float: left;
+  width: 50%;
+  padding: 10px;
+  height: 300px; /* Should be removed. Only for demonstration */
+}
+
 header {
   line-height: 1.5;
 }

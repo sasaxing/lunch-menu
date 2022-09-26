@@ -14,4 +14,4 @@ app.config.errorHandler = function (err) {
 // app.component("testComponent", testComponent);
 
 // mount
-app.mount("#app");
+app.mount("#yxing-app");

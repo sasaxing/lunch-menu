@@ -29,3 +29,5 @@ coverage
 
 # typescripts
 *.d.ts
+
+package-lock.json
