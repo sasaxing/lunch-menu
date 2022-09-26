@@ -1,6 +1,6 @@
 # lunch-menu
 
-This template should help get you started developing with Vue 3 in Vite.
+A fun project built in Vue3 + TypeScript to show you what you can cook with the food you have at home.
 
 ## Recommended IDE Setup
 
