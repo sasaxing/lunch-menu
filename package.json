@@ -8,7 +8,10 @@
     "test:unit": "vitest --environment jsdom",
     "build-only": "vite build",
     "type-check": "vue-tsc --noEmit -p tsconfig.vitest.json --composite false",
-    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
+    "test-mongodb": "node ./database/test-client.mjs",
+    "start-mongodb": "bash ./database/start-mongodb-container.sh",
+    "stop-mongodb": "bash ./database/stop-mongodb-container.sh"
   },
   "dependencies": {
     "vue": "^3.2.38"
@@ -25,6 +28,7 @@
     "eslint": "^8.22.0",
     "eslint-plugin-vue": "^9.3.0",
     "jsdom": "^20.0.0",
+    "mongodb": "^4.10.0",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.7.1",
     "typescript": "~4.7.4",
