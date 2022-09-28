@@ -54,6 +54,10 @@ Setup the Vue app in Docker container
 cd vue-app
 docker build -t yxing-vue-app-image-alpine .
 
+# push the image to dockerhub
+docker tag yxing-vue-app-image-alpine:latest xiaoshax/lunch-menu-vue:latest
+docker push xiaoshax/lunch-menu-vue:latest
+
 # run container and start the vue-app in container
 docker run -p 8080:80 --detach --rm --name yxing-vue-app yxing-vue-app-image-alpine
 # --rm means remove the container after stop

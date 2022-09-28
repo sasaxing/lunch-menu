@@ -1,4 +1,4 @@
-# node:lts-alpine  has yarn, but no bash
+# node:lts-alpine ~170MB has yarn, but no bash
 FROM node:lts-alpine 
 
 # make the 'app' folder the current working directory
