@@ -5,7 +5,7 @@ const url = "mongodb://localhost:1314";
 const client = new MongoClient(url);
 
 // Database Name
-const dbName = "yxing-db";
+const dbName = "linsa-db";
 
 async function main() {
   // Use connect method to connect to the server
