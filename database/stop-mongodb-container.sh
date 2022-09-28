@@ -1,1 +1,1 @@
-docker stop yxing-mongodb && docker rm yxing-mongodb
+docker stop yxing-mongodb

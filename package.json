@@ -2,7 +2,7 @@
   "name": "lunch-menu",
   "version": "0.0.0",
   "scripts": {
-    "dev": "vite --host",
+    "dev": "vite --host --port 80",
     "build": "run-p type-check build-only",
     "preview": "vite preview --port 4173",
     "test:unit": "vitest --environment jsdom",
@@ -14,7 +14,9 @@
     "stop-mongodb": "bash ./database/stop-mongodb-container.sh"
   },
   "dependencies": {
-    "vue": "^3.2.38"
+    "vue": "^3.2.38",
+    "mongodb": "^4.10.0",
+    "vite": "^3.0.9"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.1.4",
@@ -28,11 +30,9 @@
     "eslint": "^8.22.0",
     "eslint-plugin-vue": "^9.3.0",
     "jsdom": "^20.0.0",
-    "mongodb": "^4.10.0",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.7.1",
     "typescript": "~4.7.4",
-    "vite": "^3.0.9",
     "vitest": "^0.23.0",
     "vue-tsc": "^0.40.7"
   }
