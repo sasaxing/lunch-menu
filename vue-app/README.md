@@ -51,13 +51,11 @@ yarn stop-mongodb
 Setup the Vue app in Docker container
 ```sh
 # build the image
-docker build -t yxing-vue-app-image .
-
-# run container with an interactive console
-docker run -ti -p 8080:80 --rm --name yxing-vue-app yxing-vue-app-image /bin/bash
+cd vue-app
+docker build -t yxing-vue-app-image-alpine .
 
 # run container and start the vue-app in container
-docker run -p 8080:80 --detach --rm --name yxing-vue-app yxing-vue-app-image
+docker run -p 8080:80 --detach --rm --name yxing-vue-app yxing-vue-app-image-alpine
 # --rm means remove the container after stop
 
 # stop container

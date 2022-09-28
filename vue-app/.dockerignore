@@ -1,0 +1,4 @@
+*.d.ts
+README.md
+.eslintrc.cjs
+.prettierrc.json
