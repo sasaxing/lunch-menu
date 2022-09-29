@@ -33,19 +33,16 @@ yarn lint
 ```
 
 
-Start MongoDB locally
+Setup MongoDB locally
 ```sh
-yarn start-mongodb
-```
-
-Run MongoDB Test Client
-```sh
-yarn test-mongodb
-```
-
-Stop MongoDB
-```sh
-yarn stop-mongodb
+ # start-mongodb
+ bash ./database/start-mongodb-container.sh
+ 
+ # stop-mongodb
+ bash ./database/stop-mongodb-container.sh
+ 
+ # test-mongodb
+ node ./database/test-client.mjs
 ```
 
 Setup the Vue app in Docker container
