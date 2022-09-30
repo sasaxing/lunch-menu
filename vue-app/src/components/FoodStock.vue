@@ -4,13 +4,9 @@
 // }>();
 
 import { reactive } from "vue";
-
-interface Food {
-  name: string;
-  amount: number;
-  unit: "gram" | "piece";
-  expireDate?: string;
-}
+import type { Food } from "./MongoDbClient";
+// import { setupDB } from "./MongoDbClient";
+import { testFoodList } from "./MongoDbClient";
 
 // type AllFood = Map<string, Food[]>;
 
@@ -28,28 +24,13 @@ interface Food {
 //   ],
 // ]);
 
-const foodList: Food[] = reactive([
-  {
-    name: "tomato",
-    amount: 4,
-    unit: "piece",
-  },
-  {
-    name: "potato",
-    amount: 3,
-    unit: "piece",
-  },
-  {
-    name: "beef",
-    amount: 500,
-    unit: "gram",
-  },
-  {
-    name: "egg",
-    amount: 14,
-    unit: "piece",
-  },
-]);
+// const collection = await setupDB();
+// const insertResult = await collection.insertMany(testFoodList);
+// console.log(" ===> ", { insertResult });
+
+// const foodList: Food[] = (await collection.find({}).toArray()) as any;
+const foodList = testFoodList;
+foodList.map((food) => delete (food as any)._id);
 
 function incrementPortion(food: Food) {
   const incrementAmount = food.unit === "gram" ? 100 : 1;

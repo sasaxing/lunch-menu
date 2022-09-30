@@ -26,10 +26,11 @@ async function main() {
   const findResult = await collection.find({}).toArray();
   console.log("Found documents =>", findResult);
 
-  const filteredDocs = await collection.find({ a: 3 }).toArray();
+  const filteredDocs = (await collection.find({ a: 3 }).toArray())
+  filteredDocs.map((doc) => delete doc._id);
   console.log("Found documents filtered by { a: 3 } =>", filteredDocs);
 
-  const updateResult = await collection.updateOne({ a: 3 }, { $set: { b: 1 } });
+  const updateResult = await collection.updateMany({ a: 3 }, { $set: { b: 1 } });
   console.log("Updated documents =>", updateResult);
 
   const deleteResult = await collection.deleteMany({ a: 3 });

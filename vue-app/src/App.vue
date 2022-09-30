@@ -16,7 +16,9 @@ const imageHeight = 250;
       :width="imageWidth"
       :height="imageHeight"
     />
+  </header>
 
+  <main>
     <div class="column">
       <FoodStock />
     </div>
@@ -24,10 +26,6 @@ const imageHeight = 250;
     <div class="column">
       <RecommandedMenu />
     </div>
-  </header>
-
-  <main>
-    <TheWelcome />
   </main>
 </template>
 
