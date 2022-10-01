@@ -1,5 +1,15 @@
 # lunch-menu
 
+
+- [lunch-menu](#lunch-menu)
+  - [Requirements](#requirements)
+  - [Architecture Overview](#architecture-overview)
+  - [Vue-app Setup](#vue-app-setup)
+    - [start vuew-app Locally](#start-vuew-app-locally)
+    - [Setup the Vue app in Docker container](#setup-the-vue-app-in-docker-container)
+  - [Setup MongoDB locally](#setup-mongodb-locally)
+  - [Lessons](#lessons)
+
 A fun project built in Vue3 + TypeScript to show you what you can cook with the food you have at home.
 
 ## Requirements

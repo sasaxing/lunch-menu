@@ -1,13 +1,6 @@
 // import { Collection, MongoClient } from "mongodb";
-import { uuid } from "uuid";
+import type { Food } from "../types";
 import { reactive } from "vue";
-
-export interface Food {
-  name: string;
-  amount: number;
-  unit: "gram" | "piece";
-  expireDate?: string;
-}
 
 /*
 export async function setupDB(): Promise<Collection<any>> {

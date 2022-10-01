@@ -4,7 +4,7 @@
 // }>();
 
 import { reactive } from "vue";
-import type { Food } from "./MongoDbClient";
+import type { Food } from "../types";
 // import { setupDB } from "./MongoDbClient";
 import { testFoodList } from "./MongoDbClient";
 
