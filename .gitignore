@@ -34,4 +34,4 @@ package-lock.json
 
 database/mongoDB-local-volume
 
-lib
+nodejs-app-server/lib/*
