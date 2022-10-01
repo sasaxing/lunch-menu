@@ -76,17 +76,4 @@ describe('nodejs app server', () => {
             req.end();
         });
     });
-    // NOTE: this test needs to run the real mongoDB!
-    describe('deals with Mongodb', () => {
-        it('happy path', () => __awaiter(void 0, void 0, void 0, function* () {
-            yield appServer.connectDB();
-            (0, chai_1.expect)(appServer._mongodbCollection).to.be.ok;
-            yield sleep(10); // to give mongodb enough time to write the initial values
-            const result = yield appServer._queryItemsByName({});
-            (0, chai_1.expect)(result).to.be.not.empty;
-            yield appServer.disconnectDB();
-            (0, chai_1.expect)(appServer._mongodbCollection).to.be.undefined;
-            yield sleep(10); // to give mongodb enough time to remove all
-        }));
-    });
 });

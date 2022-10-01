@@ -53,22 +53,6 @@ describe('nodejs app server', () => {
         });
     })
     
-    // NOTE: this test needs to run the real mongoDB!
-    describe('deals with Mongodb', () => {
-        it('happy path', async () => {
-            await appServer!.connectDB();
-            expect((appServer as any)._mongodbCollection).to.be.ok;
-
-
-            await sleep(10); // to give mongodb enough time to write the initial values
-
-            const result = await (appServer as any)._queryItemsByName({});
-            expect(result).to.be.not.empty;
-
-            await appServer!.disconnectDB();
-            expect((appServer as any)._mongodbCollection).to.be.undefined;
-
-            await sleep(10); // to give mongodb enough time to remove all
-        });
-    })
+    
+    
 });
