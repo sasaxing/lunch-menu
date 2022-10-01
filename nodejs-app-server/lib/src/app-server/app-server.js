@@ -11,17 +11,20 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppServer = void 0;
 const http_1 = require("http");
+const mongo_client_wrapper_1 = require("../mongodb-client/mongo-client-wrapper");
 const logger_1 = require("../utils/logger");
 class AppServer {
-    constructor() {
+    constructor(mongoDbConfig) {
         this._server = (0, http_1.createServer)((req, res) => {
             (0, logger_1.log)('receiving request', { url: req.url });
             this._handleRequest(req, res);
             res.end();
         });
+        this._mongodbClient = new mongo_client_wrapper_1.MongoClientWrapper(mongoDbConfig);
     }
     setup(port) {
         return __awaiter(this, void 0, void 0, function* () {
+            yield this._mongodbClient.connectDB();
             this._server.listen(port, () => {
                 (0, logger_1.log)('listening on', { port });
             });
@@ -29,6 +32,7 @@ class AppServer {
     }
     teardown() {
         return __awaiter(this, void 0, void 0, function* () {
+            yield this._mongodbClient.disconnectDB();
             this._server.close();
         });
     }

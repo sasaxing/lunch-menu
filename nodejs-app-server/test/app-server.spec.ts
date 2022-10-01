@@ -12,11 +12,17 @@ describe('nodejs app server', () => {
     const serverPort = 3000;
 
     before(async () => {
-        appServer = new AppServer();
+        appServer = new AppServer({
+            url: 'mongodb://localhost:1314',
+            dbName: 'test-db',
+            collectionName: 'app-server-unit-test'
+        });
         await appServer.setup(serverPort);
     });
 
     after(async () => {
+        await (appServer as any)._mongodbClient.deleteAllInCollection();
+        await sleep(100);
         await appServer?.teardown()
     });
 

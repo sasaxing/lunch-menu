@@ -19,14 +19,23 @@ function sleep(ms) {
 // NOTE: this test needs to run the real mongoDB!
 describe('MongoClientWrapper', () => {
     it('happy path', () => __awaiter(void 0, void 0, void 0, function* () {
-        const client = new mongo_client_wrapper_1.MongoClientWrapper();
+        const client = new mongo_client_wrapper_1.MongoClientWrapper({
+            url: 'mongodb://localhost:1314',
+            dbName: 'test-db',
+            collectionName: 'db-client-unit-test'
+        });
         (0, chai_1.expect)(client._collection).to.be.undefined;
         yield client.connectDB();
         (0, chai_1.expect)(client._collection).to.be.ok;
-        const matchedFoodItems = yield client.queryItemsByName({});
-        (0, chai_1.expect)(matchedFoodItems).to.be.not.empty;
+        yield sleep(100); // to give mongodb enough time to write the initial values
+        const result1 = yield client.queryItemsByName({});
+        console.log(result1);
+        (0, chai_1.expect)(result1 === null || result1 === void 0 ? void 0 : result1.length).to.be.greaterThan(0);
         yield client.deleteAllInCollection();
-        (0, chai_1.expect)(matchedFoodItems).to.be.empty;
+        yield sleep(100); // to give mongodb enough time to remvoe the initial values
+        const result2 = yield client.queryItemsByName({});
+        console.log({ result2 });
+        (0, chai_1.expect)(result2 === null || result2 === void 0 ? void 0 : result2.length).to.be.eq(0);
         yield client.disconnectDB();
         // await sleep(10); // to give mongodb enough time to write the initial values
         // const result = await (appServer as any)._queryItemsByName({});

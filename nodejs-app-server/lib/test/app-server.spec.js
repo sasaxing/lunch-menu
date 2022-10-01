@@ -44,10 +44,16 @@ describe('nodejs app server', () => {
     let appServer;
     const serverPort = 3000;
     before(() => __awaiter(void 0, void 0, void 0, function* () {
-        appServer = new app_server_1.AppServer();
+        appServer = new app_server_1.AppServer({
+            url: 'mongodb://localhost:1314',
+            dbName: 'test-db',
+            collectionName: 'app-server-unit-test'
+        });
         yield appServer.setup(serverPort);
     }));
     after(() => __awaiter(void 0, void 0, void 0, function* () {
+        yield appServer._mongodbClient.deleteAllInCollection();
+        yield sleep(100);
         yield (appServer === null || appServer === void 0 ? void 0 : appServer.teardown());
     }));
     describe('handles basic http requests', () => {

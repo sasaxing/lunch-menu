@@ -1,4 +1,14 @@
 import { AppServer } from "./app-server/app-server";
+import { log } from "./utils/logger";
 
-const appServer = new AppServer();
-appServer.setup(3000);
+const defaultMongoDbConfig = {
+    url: 'mongodb://localhost:1314',
+    dbName: 'lunch_menu',
+    collectionName: 'food_stock'
+};
+
+const appServer = new AppServer(defaultMongoDbConfig);
+appServer.setup(3000).then((result) => {
+}).catch((reason) => {
+    log('Error happens during setup!', {reason});
+});

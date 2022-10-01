@@ -15,7 +15,7 @@
   "scripts": {
     "build": "tsc",
     "start": "yarn build && node lib/src/index.js",
-    "test": "yarn build && mocha lib/test/index.spec.js"
+    "test": "yarn build && mocha lib/test/*.spec.js"
   },
   "dependencies": {
     "@types/mongodb": "^4.0.7",

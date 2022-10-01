@@ -8,28 +8,27 @@ async function sleep(ms: number) {
 // NOTE: this test needs to run the real mongoDB!
 describe('MongoClientWrapper', () => {
     it('happy path', async () => {
-        const client = new MongoClientWrapper()
+        const client = new MongoClientWrapper({
+            url: 'mongodb://localhost:1314',
+            dbName: 'test-db',
+            collectionName: 'db-client-unit-test'
+        })
+
         expect((client as any)._collection).to.be.undefined;
 
         await client.connectDB()
         expect((client as any)._collection).to.be.ok;
+        await sleep(100); // to give mongodb enough time to write the initial values
 
-        const matchedFoodItems = await client.queryItemsByName({})
-        expect(matchedFoodItems).to.be.not.empty;
+        const result1 = await client.queryItemsByName({})
+        expect(result1?.length).to.be.greaterThan(0);
 
-        await client.deleteAllInCollection()
-        expect(matchedFoodItems).to.be.empty;
+        await client.deleteAllInCollection();
+        await sleep(100); // to give mongodb enough time to remvoe the initial values
 
-        await client.disconnectDB()
-        
-        // await sleep(10); // to give mongodb enough time to write the initial values
+        const result2 = await client.queryItemsByName({})
+        expect(result2?.length).to.be.eq(0);
 
-        // const result = await (appServer as any)._queryItemsByName({});
-        // expect(result).to.be.not.empty;
-
-        // await appServer!.disconnectDB();
-        // expect((appServer as any)._mongodbCollection).to.be.undefined;
-
-        // await sleep(10); // to give mongodb enough time to remove all
+        await client.disconnectDB();
     });
 })

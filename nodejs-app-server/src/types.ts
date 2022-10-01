@@ -4,3 +4,9 @@ export interface Food {
     unit: "gram" | "piece";
     expireDate?: string;
 }
+
+export interface MongoDBConfig {
+    url: string;
+    dbName: string;
+    collectionName: string;
+}

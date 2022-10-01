@@ -13,7 +13,8 @@ exports.MongoClientWrapper = void 0;
 const mongodb_1 = require("mongodb");
 const logger_1 = require("../utils/logger");
 class MongoClientWrapper {
-    constructor() {
+    constructor(_mongoDBConfig) {
+        this._mongoDBConfig = _mongoDBConfig;
         this._initialFoodList = [
             {
                 name: "tomato",
@@ -36,11 +37,7 @@ class MongoClientWrapper {
                 unit: "piece",
             },
         ];
-        this._mongoDBConfig = {
-            url: 'mongodb://localhost:1314',
-            db_name: 'lunch_menu',
-            collection: 'food_stock',
-        };
+        this._client = new mongodb_1.MongoClient(this._mongoDBConfig.url);
     }
     connectDB() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -49,10 +46,9 @@ class MongoClientWrapper {
     }
     _setupMongoDBClient() {
         return __awaiter(this, void 0, void 0, function* () {
-            this._client = new mongodb_1.MongoClient(this._mongoDBConfig.url);
             yield this._client.connect();
-            const db = this._client.db(this._mongoDBConfig.db_name);
-            this._collection = db.collection(this._mongoDBConfig.collection);
+            const db = this._client.db(this._mongoDBConfig.dbName);
+            this._collection = db.collection(this._mongoDBConfig.collectionName);
             this._putInitialFoodList();
         });
     }
@@ -61,11 +57,9 @@ class MongoClientWrapper {
         (_a = this._collection) === null || _a === void 0 ? void 0 : _a.insertMany(this._initialFoodList);
     }
     disconnectDB() {
-        var _a;
         return __awaiter(this, void 0, void 0, function* () {
-            (_a = this._client) === null || _a === void 0 ? void 0 : _a.close();
+            this._client.close();
             this._collection = undefined;
-            this._client = undefined;
         });
     }
     deleteAllInCollection() {
@@ -84,7 +78,7 @@ class MongoClientWrapper {
             const findDocuments = yield ((_a = this._collection) === null || _a === void 0 ? void 0 : _a.find(query_map).toArray());
             if (!findDocuments || findDocuments.length === 0) {
                 (0, logger_1.log)('Nothing found from mongoDb', { name: query_map.name });
-                return;
+                return [];
             }
             const matchedFoodItems = findDocuments.map((doc) => {
                 delete doc._id;
