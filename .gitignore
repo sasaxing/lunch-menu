@@ -33,3 +33,5 @@ coverage
 package-lock.json
 
 database/mongoDB-local-volume
+
+lib

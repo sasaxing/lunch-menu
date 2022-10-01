@@ -40,10 +40,17 @@ class AppServer {
         const method = request.method;
         const url = request.url;
         (0, logger_1.log)('handling request', { method, url });
-        if (method !== 'GET') {
-            response.writeHead(400, { 'Content-Type': 'text/plain' });
-            response.write('not-okay');
-            return;
+        switch (method) {
+            case 'GET':
+                break;
+            case 'DELETE':
+                break;
+            case 'POST':
+                break;
+            default:
+                response.writeHead(400, { 'Content-Type': 'text/plain' });
+                response.write('not-okay');
+                return;
         }
         response.writeHead(200, { 'Content-Type': 'text/plain' });
         response.write('okay');
