@@ -18,16 +18,22 @@ describe('MongoClientWrapper', () => {
 
         await client.connectDB()
         expect((client as any)._collection).to.be.ok;
-        await sleep(100); // to give mongodb enough time to write the initial values
 
-        const result1 = await client.queryItemsByName({})
-        expect(result1?.length).to.be.greaterThan(0);
+        expect((await client.queryItemsByName({}))?.length).to.be.eq(0);
+
+        await client.addFood({
+            name: 'cheese',
+            amount: 200,
+            unit:'gram',
+        });
+        await sleep(50); // to give mongodb enough time to update
+
+        expect((await client.queryItemsByName({}))?.length).to.be.eq(1);
 
         await client.deleteAllInCollection();
-        await sleep(100); // to give mongodb enough time to remvoe the initial values
-
-        const result2 = await client.queryItemsByName({})
-        expect(result2?.length).to.be.eq(0);
+        await sleep(50); // to give mongodb enough time to update
+        
+        expect((await client.queryItemsByName({}))?.length).to.be.eq(0);
 
         await client.disconnectDB();
     });

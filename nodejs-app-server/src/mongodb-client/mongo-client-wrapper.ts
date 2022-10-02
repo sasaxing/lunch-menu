@@ -4,29 +4,7 @@ import { log } from "../utils/logger";
 
 export class MongoClientWrapper{
     private _client: MongoClient;
-    private _collection: Collection | undefined
-    private _initialFoodList: Food[] = [
-        {
-          name: "tomato",
-          amount: 4,
-          unit: "piece",
-        },
-        {
-          name: "potato",
-          amount: 3,
-          unit: "piece",
-        },
-        {
-          name: "beef",
-          amount: 500,
-          unit: "gram",
-        },
-        {
-          name: "egg",
-          amount: 14,
-          unit: "piece",
-        },
-    ];
+    private _collection: Collection | undefined;
 
     constructor(private _mongoDBConfig: MongoDBConfig){
         this._client = new MongoClient(this._mongoDBConfig.url);
@@ -40,11 +18,10 @@ export class MongoClientWrapper{
         await this._client.connect()
         const db = this._client.db(this._mongoDBConfig.dbName)
         this._collection = db.collection(this._mongoDBConfig.collectionName)
-        this._putInitialFoodList();
     }
 
-    private _putInitialFoodList(){
-        this._collection?.insertMany(this._initialFoodList);
+    async addFood(newFood: Food){
+        await this._collection?.insertOne(newFood);
     }
 
     async disconnectDB() {
