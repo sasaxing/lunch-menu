@@ -31,18 +31,25 @@ describe('nodejs app server', () => {
             const options = {
                 host: '127.0.0.1',
                 port: serverPort,
-                path: '/length_request'
+                path: '/any'
             };
               
             const req = http.request(options, (res) => {
                 expect(res.statusCode).to.eq(200);
-                testDone();
+
+                let body = '';
+                res.on('data', function (chunk) {
+                    console.log('new body chunk: ' + chunk);
+                    body += chunk;
+
+                    if (body === '[]') {
+                        testDone();
+                    }
+                });
             });
-    
             req.end();
         });
-      
-    
+
         it('should respond 400 on unknown request', (testDone) => {
             const options: http.RequestOptions = {
                 host: '127.0.0.1',
@@ -57,8 +64,5 @@ describe('nodejs app server', () => {
     
             req.end();
         });
-    })
-    
-    
-    
+    });    
 });

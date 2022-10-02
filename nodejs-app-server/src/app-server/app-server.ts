@@ -8,10 +8,10 @@ export class AppServer {
     private _mongodbClient: MongoClientWrapper;
 
     constructor(mongoDbConfig: MongoDBConfig) {
-        this._server = createServer((req, res) => {
+        this._server = createServer(async (req, res) => {
             log('receiving request',{ url: req.url})
 
-            this._handleRequest(req, res);
+            await this._handleRequest(req, res);
             res.end();
         });
 
@@ -30,27 +30,33 @@ export class AppServer {
         this._server.close();
     }
 
-    private _handleRequest(request: IncomingMessage, response: ServerResponse<IncomingMessage> ) {
+    private async _handleRequest(request: IncomingMessage, response: ServerResponse<IncomingMessage> ) {
         const method = request.method;
         const url = request.url;
         log('handling request', { method, url })
 
         switch (method) {
             case 'GET':
+                await this._handleGETRequest(request, response);
                 break;
             case 'DELETE':
-                break;
+                // TODO: handle delete
             case 'POST':
+                // TODO: handle post
+                response.writeHead(200, { 'Content-Type': 'text/plain' });
+                response.write('okay');
                 break;
             default:
                 response.writeHead(400, { 'Content-Type': 'text/plain' });
                 response.write('not-okay');
                 return;
-
         }
+    }
 
-        response.writeHead(200, { 'Content-Type': 'text/plain' });
-        response.write('okay');
+    private async _handleGETRequest(request: IncomingMessage, response: ServerResponse<IncomingMessage>) {
+        const currentFoodListInDB = await this._mongodbClient.queryItemsByName({});
+        response.writeHead(200, { 'Content-Type': 'text/plain', "Access-Control-Allow-Origin": "*" });
+        response.write(JSON.stringify(currentFoodListInDB));
     }
 
     

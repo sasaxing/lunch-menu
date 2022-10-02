@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import FoodStock from "./components/FoodStock.vue";
 import RecommandedMenu from "./components/RecommandedMenu.vue";
+import Test from "./components/Test.vue";
 
 const imageSrc = "/src/assets/hubo.png"; // must be absolute path in the project`
 const imageWidth = 350;
@@ -19,6 +20,9 @@ const imageHeight = 250;
   </header>
 
   <main>
+    <!-- <div class="column">
+      <Test />
+    </div> -->
     <div class="column">
       <FoodStock />
     </div>

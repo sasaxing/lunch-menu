@@ -2,11 +2,8 @@
 // defineProps<{
 //   msg: string;
 // }>();
-
 import { reactive } from "vue";
 import type { Food } from "../types";
-// import { setupDB } from "./MongoDbClient";
-import { testFoodList } from "./MongoDbClient";
 
 // type AllFood = Map<string, Food[]>;
 
@@ -24,13 +21,29 @@ import { testFoodList } from "./MongoDbClient";
 //   ],
 // ]);
 
-// const collection = await setupDB();
-// const insertResult = await collection.insertMany(testFoodList);
-// console.log(" ===> ", { insertResult });
+async function getInitialFoodList(): Promise<Food[]> {
+  const myHeaders = new Headers();
 
-// const foodList: Food[] = (await collection.find({}).toArray()) as any;
-const foodList = testFoodList;
-foodList.map((food) => delete (food as any)._id);
+  const myRequest = new Request("http://localhost:3000", {
+    method: "GET",
+    headers: myHeaders,
+    mode: "cors",
+    cache: "default",
+  });
+
+  return new Promise((resolve) => {
+    fetch(myRequest)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log({ data });
+        resolve(data);
+        return data;
+      });
+  });
+}
+
+const foodList: Food[] = reactive([]);
+// foodList.map((food) => delete (food as any)._id);
 
 function incrementPortion(food: Food) {
   const incrementAmount = food.unit === "gram" ? 100 : 1;
@@ -49,6 +62,12 @@ function decrementPortion(food: Food) {
 function deleteItem(food: Food) {
   const foodIndex = foodList.indexOf(food);
   foodList.splice(foodIndex, 1);
+}
+
+function init() {
+  getInitialFoodList().then((result: Food[]) => {
+    foodList.push(...result);
+  });
 }
 
 function addNewFood() {
@@ -106,6 +125,7 @@ function addNewFood() {
       placeholder="garlic,5,piece,20221010"
     />
     <button @click="addNewFood">Add new food</button>
+    <button @click="init">INIT</button>
   </div>
 </template>
 
