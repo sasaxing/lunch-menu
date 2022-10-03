@@ -34,6 +34,11 @@ export class MongoClientWrapper{
         await this._collection?.deleteMany({})
     }
 
+
+    async deleteOne(item: Food) {
+        await this._collection?.findOneAndDelete(item);
+    }
+
     /**
      * 
      * @param query_map if no name provided, then get all documents

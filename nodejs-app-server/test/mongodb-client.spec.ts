@@ -30,10 +30,10 @@ describe('MongoClientWrapper', () => {
 
         expect((await client.queryItemsByName({}))?.length).to.be.eq(1);
 
-        await client.deleteAllInCollection();
-        await sleep(50); // to give mongodb enough time to update
+        // await client.deleteAllInCollection();
+        // await sleep(50); // to give mongodb enough time to update
         
-        expect((await client.queryItemsByName({}))?.length).to.be.eq(0);
+        // expect((await client.queryItemsByName({}))?.length).to.be.eq(0);
 
         await client.disconnectDB();
     });

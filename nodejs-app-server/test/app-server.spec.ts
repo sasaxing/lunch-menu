@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import * as http from 'http';
 import { AppServer } from '../src/app-server/app-server';
-
+import axios from 'axios'
 
 async function sleep(ms: number) {
     return new Promise((resolve) => setTimeout(resolve, ms));
@@ -65,34 +65,17 @@ describe('nodejs app server', () => {
             req.end();
         });
 
-        it.only('DELETE: should delete the food in request', (testDone) => {
-            const postData = JSON.stringify({aaowiejfawef: 1})
-
-            const options = {
-                host: '127.0.0.1',
-                port: serverPort,
+        it.only('DELETE: should delete the food in request', async () => {
+            const url = "http://localhost:"+serverPort
+            const result = await axios.delete(url, {
                 method: 'DELETE',
-                body: postData
-            };
-              
-            const req = http.request(options, (res) => {
-                expect(res.statusCode).to.eq(200);
+                headers: {'Content-Type': 'application/json'},
+                data: { aaaaa: 1}
+            })
 
-                let body = '';
-                res.on('data', function (chunk) {
-                    console.log('new body chunk: ' + chunk);
-                    body += chunk;
-
-                    if (JSON.parse(body).acknowledged === true && JSON.parse(body).deletedCount === 0) {
-                        testDone();
-                        
-                    }
-                });
-            });
-
-            // req.write(postData)
-            
-            req.end();
+            expect(result.data).deep.eq({
+                acknowledge: true, deletedCount: 0 
+            })
         })
     });    
 });
