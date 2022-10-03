@@ -41,6 +41,8 @@ export class AppServer {
                 break;
             case 'DELETE':
                 // TODO: handle delete
+                return this._handleDELETERequest(request, response)
+            case 'PUT':
             case 'POST':
                 // TODO: handle post
                 response.writeHead(200, { 'Content-Type': 'text/plain' });
@@ -53,18 +55,24 @@ export class AppServer {
         }
     }
 
-    private async _handleGETRequest(request: IncomingMessage, response: ServerResponse<IncomingMessage>) {
+    private async _handleGETRequest(
+        request: IncomingMessage,
+        response: ServerResponse<IncomingMessage>
+    ) {
         const currentFoodListInDB = await this._mongodbClient.queryItemsByName({});
-        response.writeHead(200, { 'Content-Type': 'text/plain', "Access-Control-Allow-Origin": "*" });
+        response.writeHead(200, {
+            'Content-Type': 'text/plain',
+            "Access-Control-Allow-Origin": "*" 
+        });
         response.write(JSON.stringify(currentFoodListInDB));
     }
 
-    
+    private async _handleDELETERequest(request: IncomingMessage, response: ServerResponse<IncomingMessage> ) { 
+        console.log("request is ", request)
+        request.on('data', (chunk) => {
+          console.log(`BODY: ${chunk}`);
+        });
+    }
 
-    
-
-    
-
-    
 
 }

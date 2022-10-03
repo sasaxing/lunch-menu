@@ -27,7 +27,7 @@ describe('nodejs app server', () => {
     });
 
     describe('handles basic http requests', () => {
-        it('should accept http request', (testDone) => {
+        it('GET: should accept http request', (testDone) => {
             const options = {
                 host: '127.0.0.1',
                 port: serverPort,
@@ -64,5 +64,35 @@ describe('nodejs app server', () => {
     
             req.end();
         });
+
+        it.only('DELETE: should delete the food in request', (testDone) => {
+            const postData = JSON.stringify({aaowiejfawef: 1})
+
+            const options = {
+                host: '127.0.0.1',
+                port: serverPort,
+                method: 'DELETE',
+                body: postData
+            };
+              
+            const req = http.request(options, (res) => {
+                expect(res.statusCode).to.eq(200);
+
+                let body = '';
+                res.on('data', function (chunk) {
+                    console.log('new body chunk: ' + chunk);
+                    body += chunk;
+
+                    if (JSON.parse(body).acknowledged === true && JSON.parse(body).deletedCount === 0) {
+                        testDone();
+                        
+                    }
+                });
+            });
+
+            // req.write(postData)
+            
+            req.end();
+        })
     });    
 });

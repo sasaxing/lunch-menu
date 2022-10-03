@@ -4,3 +4,11 @@ export interface Food {
   unit: "gram" | "piece";
   expireDate?: string;
 }
+
+export interface RequestConfig {
+  method: string;
+  headers: Headers;
+  mode: "cors";
+  cache: "default";
+  body?: string;
+}

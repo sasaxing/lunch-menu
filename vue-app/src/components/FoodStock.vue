@@ -3,7 +3,7 @@
 //   msg: string;
 // }>();
 import { reactive } from "vue";
-import type { Food } from "../types";
+import type { Food, RequestConfig } from "../types";
 
 // type AllFood = Map<string, Food[]>;
 
@@ -21,18 +21,23 @@ import type { Food } from "../types";
 //   ],
 // ]);
 
-async function getInitialFoodList(): Promise<Food[]> {
-  const myHeaders = new Headers();
-
-  const myRequest = new Request("http://localhost:3000", {
-    method: "GET",
-    headers: myHeaders,
+function createRequest(method: string, data?: Food): Request {
+  const requestConfig: RequestConfig = {
+    headers: new Headers(),
+    method,
     mode: "cors",
     cache: "default",
-  });
+    body: JSON.stringify(data),
+  };
+  const request = new Request("http://localhost:3000", requestConfig);
+  return request;
+}
+
+async function getInitialFoodList(method: string = "GET"): Promise<Food[]> {
+  const getAllRequest = createRequest(method);
 
   return new Promise((resolve) => {
-    fetch(myRequest)
+    fetch(getAllRequest)
       .then((response) => response.json())
       .then((data) => {
         console.log({ data });
@@ -46,6 +51,8 @@ const foodList: Food[] = reactive([]);
 // foodList.map((food) => delete (food as any)._id);
 
 function incrementPortion(food: Food) {
+  const method = "POST";
+
   const incrementAmount = food.unit === "gram" ? 100 : 1;
 
   console.log(" + ", food);
@@ -66,6 +73,7 @@ function deleteItem(food: Food) {
 
 function init() {
   getInitialFoodList().then((result: Food[]) => {
+    foodList.length = 0;
     foodList.push(...result);
   });
 }

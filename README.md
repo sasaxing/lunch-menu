@@ -83,3 +83,13 @@ docker stop linsa-vue-app
 - No direct MongoDB access from Vue, better to add a NodeJS layer in the middle.
     - [Should not try to import MongoDBClient in Vue(browser) - stackoverflow](https://stackoverflow.com/questions/44577052/how-to-import-mongo-db-in-vue-js-2)
     - [How should the architect look like?](https://www.bezkoder.com/vue-node-express-mongodb-mevn-crud/)
+- Server needs to specify proper access control to certain resources.
+  - by writing to the response header e.g., the following to only allow all requests from a different origin - localhost:80 to access the target resources:
+    ```TypeScript
+    response.writeHead(200, {
+      "Access-Control-Allow-Origin": "http://localhost:80" 
+      "Access-Control-Allow-Methods": "*" 
+    });
+    ```
+  - [Cross-Origin Resource Sharing (CORS)](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS)
+    > For security reasons, browsers restrict cross-origin HTTP requests initiated from scripts. For example, XMLHttpRequest and the Fetch API follow the same-origin policy. This means that a web application using those APIs can only request resources from the same origin the application was loaded from unless the response from other origins includes the right CORS headers.
