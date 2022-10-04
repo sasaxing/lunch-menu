@@ -11,7 +11,7 @@ export class MongoClientWrapper{
     }
 
     async connectDB() {
-        await this._setupMongoDBClient();
+        return this._setupMongoDBClient();
     }
 
     private async _setupMongoDBClient() {
@@ -20,8 +20,8 @@ export class MongoClientWrapper{
         this._collection = db.collection(this._mongoDBConfig.collectionName)
     }
 
-    async addFood(newFood: Food){
-        await this._collection?.insertOne(newFood);
+    async addFood(newFood: Food): Promise<any> {
+        return this._collection?.insertOne(newFood);
     }
 
     async disconnectDB() {
@@ -31,12 +31,16 @@ export class MongoClientWrapper{
     }
 
     async deleteAllInCollection() {
-        await this._collection?.deleteMany({})
+        return this._collection?.deleteMany({})
     }
 
 
     async deleteOne(item: Food) {
-        await this._collection?.findOneAndDelete(item);
+        return this._collection?.findOneAndDelete(item);
+    }
+
+    async updateAmount(updateMap: any){
+        await this._collection?.updateOne({'name': updateMap.name}, updateMap.update);
     }
 
     /**

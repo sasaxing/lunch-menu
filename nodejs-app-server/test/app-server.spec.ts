@@ -2,6 +2,7 @@ import { expect } from 'chai';
 import * as http from 'http';
 import { AppServer } from '../src/app-server/app-server';
 import axios from 'axios'
+import { response } from 'express';
 
 async function sleep(ms: number) {
     return new Promise((resolve) => setTimeout(resolve, ms));
@@ -21,10 +22,13 @@ describe('nodejs app server', () => {
     });
 
     after(async () => {
-        await (appServer as any)._mongodbClient.deleteAllInCollection();
         await sleep(100);
         await appServer?.teardown()
     });
+
+    beforeEach(async () => {
+        await (appServer as any)._mongodbClient.deleteAllInCollection();
+    })
 
     describe('handles basic http requests', () => {
         it('GET: should accept http request', (testDone) => {
@@ -50,7 +54,7 @@ describe('nodejs app server', () => {
             req.end();
         });
 
-        it('should respond 400 on unknown request', (testDone) => {
+        it('GET: should respond 400 on unknown request', (testDone) => {
             const options: http.RequestOptions = {
                 host: '127.0.0.1',
                 port: serverPort,
@@ -65,17 +69,69 @@ describe('nodejs app server', () => {
             req.end();
         });
 
-        it.only('DELETE: should delete the food in request', async () => {
-            const url = "http://localhost:"+serverPort
-            const result = await axios.delete(url, {
-                method: 'DELETE',
-                headers: {'Content-Type': 'application/json'},
-                data: { aaaaa: 1}
+        it('PUT: should add a new food', async () => {
+            const url = "http://localhost:" + serverPort;
+            const result = await axios.put(url, { 
+                name: 'test-put',
+                amount: 1,
+                unit: 'gram' 
             })
 
-            expect(result.data).deep.eq({
-                acknowledge: true, deletedCount: 0 
+            expect(result.data).deep.include({
+                acknowledged: true
+            });
+        })
+
+        it('DELETE: should delete the food in request', async () => {
+            const url = "http://localhost:" + serverPort;
+            const testFood = { 
+                name: 'test-put',
+                amount: 1,
+                unit: 'gram' 
+            };
+            await axios.put(url, testFood);
+
+            let foodInDB = await axios.get(url);
+            expect(foodInDB.data).to.deep.include(testFood);
+            
+            await axios.delete(url, {
+                method: 'DELETE',
+                headers: {'Content-Type': 'application/json'},
+                data: { name: 'test-put' }
             })
+
+            foodInDB = await axios.get(url);
+            expect(foodInDB.data).to.be.empty;
+        })
+
+        it.only('POST: should update an amount in food', async () => {
+            const url = "http://localhost:" + serverPort;
+            const testFood = { 
+                name: 'test-put',
+                amount: 2,
+                unit: 'gram' 
+            };
+            await axios.put(url, testFood);
+            let foodInDB = await axios.get(url);
+            expect(foodInDB.data).to.deep.include(testFood);
+
+            await axios.post(url, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                data: {name: 'test-put', update: {"$inc": { "amount": -1 }}}
+            })
+
+            foodInDB = await axios.get(url)
+            expect(foodInDB.data[0].amount).to.be.eq(1);
+
+            await axios.post(url, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                data: {name: 'test-put', update: {"$inc": { "amount": 3 }}}
+            })
+
+            foodInDB = await axios.get(url)
+            expect(foodInDB.data[0].amount).to.be.eq(4);
         })
     });    
 });

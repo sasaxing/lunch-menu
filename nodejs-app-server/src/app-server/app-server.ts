@@ -34,9 +34,18 @@ export class AppServer {
             this._handleGETRequest(req, res);
         });
 
-        this._expressApp.delete('*', (req: Request, res: Response) => {
+        this._expressApp.delete('*', cors.default(corsOptions), (req: Request, res: Response) => {
             this._handleDELETERequest(req, res);
         });
+
+        this._expressApp.put('*', cors.default(corsOptions), (req: Request, res: Response) => {
+            this._handlePUTRequest(req, res);
+        });
+
+        this._expressApp.post('*', cors.default(corsOptions), (req: Request, res: Response) => {
+            this._handlePOSTRequest(req, res);
+        });
+
     }
 
     async teardown() {
@@ -51,8 +60,23 @@ export class AppServer {
     }
 
     private async _handleDELETERequest(request: Request, response: Response ) { 
-        const deletedResult = await this._mongodbClient.deleteOne(request.body);
-        log('DELETE', { deletedResult });
-        response.json({ acknowledge: true, deletedCount: 0});
+        const toDelete = request.body;
+        log('DELETE', { toDelete });
+        const deletedResult = await this._mongodbClient.deleteOne(toDelete);
+        response.json(deletedResult);
+    }
+
+    private async _handlePUTRequest(request: Request, response: Response ) { 
+        const newFood = request.body;
+        log('PUT', { newFood });
+        const putResult = await this._mongodbClient.addFood(newFood);
+        response.json(putResult);
+    }
+
+    private async _handlePOSTRequest(request: Request, response: Response) {
+        const updateMap = request.body.data;
+        log('POST', updateMap)
+        const updateResult = await this._mongodbClient.updateAmount(updateMap)
+        response.json(updateResult)
     }
 }
