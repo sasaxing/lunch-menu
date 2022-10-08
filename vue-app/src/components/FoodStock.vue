@@ -3,7 +3,9 @@
 //   msg: string;
 // }>();
 import { reactive } from "vue";
-import type { Food, RequestConfig } from "../types";
+import type { Food } from "../types";
+import type { AxiosRequestConfig } from "axios";
+import axios from "axios";
 
 // type AllFood = Map<string, Food[]>;
 
@@ -21,31 +23,24 @@ import type { Food, RequestConfig } from "../types";
 //   ],
 // ]);
 
-function createRequest(method: string, data?: Food): Request {
-  const requestConfig: RequestConfig = {
-    headers: new Headers(),
+const nodeAppUrl = "http://localhost:3000";
+
+function createRequest(method: string, data?: Food): AxiosRequestConfig {
+  const requestConfig: AxiosRequestConfig = {
     method,
-    mode: "cors",
-    cache: "default",
-    body: JSON.stringify(data),
+    headers: { "Content-Type": "application/json" },
+    data: data,
   };
-  const request = new Request("http://localhost:3000", requestConfig);
-  return request;
+  return requestConfig;
 }
 
 async function getInitialFoodList(method: string = "GET"): Promise<Food[]> {
-  const getAllRequest = createRequest(method);
+  const foodInDB = await axios.get(nodeAppUrl);
 
-  return new Promise((resolve) => {
-    fetch(getAllRequest)
-      .then((response) => response.json())
-      .then((data) => {
-        console.log({ data });
-        resolve(data);
-        return data;
-      });
-  });
+  return foodInDB.data;
 }
+
+async function updateDB(): Promise<void> {}
 
 const foodList: Food[] = reactive([]);
 // foodList.map((food) => delete (food as any)._id);
@@ -71,11 +66,10 @@ function deleteItem(food: Food) {
   foodList.splice(foodIndex, 1);
 }
 
-function init() {
-  getInitialFoodList().then((result: Food[]) => {
-    foodList.length = 0;
-    foodList.push(...result);
-  });
+async function init() {
+  const result = await getInitialFoodList();
+  foodList.length = 0;
+  foodList.push(...result);
 }
 
 function addNewFood() {
