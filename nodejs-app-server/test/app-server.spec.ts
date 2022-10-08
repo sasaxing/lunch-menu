@@ -104,7 +104,7 @@ describe('nodejs app server', () => {
             expect(foodInDB.data).to.be.empty;
         })
 
-        it.only('POST: should update an amount in food', async () => {
+        it('POST: should update an amount in food', async () => {
             const url = "http://localhost:" + serverPort;
             const testFood = { 
                 name: 'test-put',
