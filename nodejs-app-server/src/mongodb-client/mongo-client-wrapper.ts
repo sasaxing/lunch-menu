@@ -8,6 +8,7 @@ export class MongoClientWrapper{
 
     constructor(private _mongoDBConfig: MongoDBConfig){
         this._client = new MongoClient(this._mongoDBConfig.url);
+        // this._client = new MongoClient(this._mongoDBConfig.url, { replicaSet: 'rs0' });
     }
 
     async connectDB() {
@@ -18,6 +19,11 @@ export class MongoClientWrapper{
         await this._client.connect()
         const db = this._client.db(this._mongoDBConfig.dbName)
         this._collection = db.collection(this._mongoDBConfig.collectionName)
+        // const changeStream = this._collection.watch();
+        // changeStream.on('change', next => {
+        //     // process next document
+        //     log("change happens")
+        // });
     }
 
     async addFood(newFood: Food): Promise<any> {
@@ -40,7 +46,7 @@ export class MongoClientWrapper{
     }
 
     async updateAmount(updateMap: any){
-        await this._collection?.updateOne({'name': updateMap.name}, updateMap.update);
+        return this._collection?.findOneAndUpdate({'name': updateMap.name}, updateMap.update, { returnDocument: 'after' });
     }
 
     /**

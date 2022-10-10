@@ -2,7 +2,7 @@ import { AppServer } from "./app-server/app-server";
 import { log } from "./utils/logger";
 
 const defaultMongoDbConfig = {
-    url: 'mongodb://localhost:1314',
+    url: 'mongodb://localhost:27017',
     dbName: 'lunch_menu',
     collectionName: 'food_stock'
 };

@@ -72,7 +72,7 @@ async function init() {
   foodList.push(...result);
 }
 
-function addNewFood() {
+async function addNewFood() {
   const userInput = (
     document.getElementById("newFoodInput") as HTMLInputElement
   ).value.replace(/ /g, "");
@@ -90,12 +90,16 @@ function addNewFood() {
   const expireMonth = expireDate.slice(4, 6);
   const expireDay = expireDate.slice(6, 8);
 
-  foodList.push({
+  console.log("==> trying");
+
+  const addNewFoodResult = await axios.put(nodeAppUrl, {
     name,
     amount: Number(amount),
     unit: unit.startsWith("p") ? "piece" : "gram",
     expireDate: `${expireYear}-${expireMonth}-${expireDay}`,
   });
+  console.log({ addNewFoodResult });
+  foodList.push();
 }
 </script>
 
