@@ -4,7 +4,7 @@ import { MongoDBConfig } from '../types';
 import { log } from '../utils/logger';
 import express, { Express } from 'express';
 import { Request, Response } from 'express-serve-static-core';
-import cors from 'cors'
+import * as cors from 'cors'
 
 export class AppServer {
     private _expressApp: Express;
@@ -14,7 +14,7 @@ export class AppServer {
     constructor(mongoDbConfig: MongoDBConfig) {
         this._expressApp = express();
         this._expressApp.use(express.json());
-        this._expressApp.use(cors());
+        // this._expressApp.use(cors.default());
 
         this._mongodbClient = new MongoClientWrapper(mongoDbConfig)
     }
@@ -30,19 +30,22 @@ export class AppServer {
             optionsSuccessStatus: 222,
         }
 
-        this._expressApp.get('*', (req, res) => {
+        // allow preflight
+        this._expressApp.options('*', cors.default(corsOptions)) // include before other routes
+
+        this._expressApp.get('*', cors.default(corsOptions), (req, res) => {
             this._handleGETRequest(req, res);
         });
 
-        this._expressApp.delete('*', (req: Request, res: Response) => {
+        this._expressApp.delete('*', cors.default(corsOptions), (req: Request, res: Response) => {
             this._handleDELETERequest(req, res);
         });
 
-        this._expressApp.put('*', (req: Request, res: Response) => {
+        this._expressApp.put('*', cors.default(corsOptions), (req: Request, res: Response) => {
             this._handlePUTRequest(req, res);
         });
 
-        this._expressApp.post('*', (req: Request, res: Response) => {
+        this._expressApp.post('*', cors.default(corsOptions), (req: Request, res: Response) => {
             this._handlePOSTRequest(req, res);
         });
 
