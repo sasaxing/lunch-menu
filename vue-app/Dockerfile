@@ -13,7 +13,7 @@ RUN npm install
 # # copy project files and folders to the current working directory (i.e. 'app' folder)
 COPY . /vue-app/
 
-# # EXPOSE 80
-EXPOSE 80
+# # EXPOSE 8001
+EXPOSE 8001
 
 CMD [ "npm", "run", "dev" ]

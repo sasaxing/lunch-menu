@@ -26,7 +26,7 @@ export class AppServer {
         });
 
         const corsOptions: cors.CorsOptions = {
-            origin: 'http://localhost',
+            origin: 'http://localhost:8001',
             optionsSuccessStatus: 222,
         }
 

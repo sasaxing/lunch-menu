@@ -2,7 +2,7 @@
   "name": "lunch-menu",
   "version": "0.0.0",
   "scripts": {
-    "dev": "vite --host --port 80",
+    "dev": "vite --host --port 8001",
     "build": "run-p type-check build-only",
     "preview": "vite preview --port 4173",
     "test:unit": "vitest --environment jsdom",

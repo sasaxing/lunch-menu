@@ -57,7 +57,7 @@ docker tag linsa-vue-app-image-alpine:latest <docker_user_name>/lunch-menu-vue:l
 docker push <docker_user_name>/lunch-menu-vue:latest
 
 # run container and start the vue-app in container
-docker run -p 8080:80 --detach --rm --name linsa-vue-app linsa-vue-app-image-alpine
+docker run -p 8080:8001 --detach --rm --name linsa-vue-app linsa-vue-app-image-alpine
 # --rm means remove the container after stop
 
 # stop container
@@ -84,10 +84,10 @@ docker stop linsa-vue-app
     - [Should not try to import MongoDBClient in Vue(browser) - stackoverflow](https://stackoverflow.com/questions/44577052/how-to-import-mongo-db-in-vue-js-2)
     - [How should the architect look like?](https://www.bezkoder.com/vue-node-express-mongodb-mevn-crud/)
 - Server needs to specify proper access control to certain resources.
-  - by writing to the response header e.g., the following to only allow all requests from a different origin - localhost:80 to access the target resources:
+  - by writing to the response header e.g., the following to only allow all requests from a different origin - localhost:8001 to access the target resources:
     ```TypeScript
     response.writeHead(200, {
-      "Access-Control-Allow-Origin": "http://localhost:80" 
+      "Access-Control-Allow-Origin": "http://localhost:8001" 
       "Access-Control-Allow-Methods": "*" 
     });
     ```
