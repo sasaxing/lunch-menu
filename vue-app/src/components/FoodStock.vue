@@ -4,72 +4,70 @@
 // }>();
 import { reactive } from "vue";
 import type { Food } from "../types";
-import type { AxiosRequestConfig } from "axios";
 import axios from "axios";
-
-// type AllFood = Map<string, Food[]>;
-
-// const exampleAllFood: AllFood = new Map([
-//   [
-//     "garlic",
-//     [
-//       {
-//         amount: 3,
-//         unit: "piece",
-//         expireDate: "2022-10-10",
-//       },
-//       { amount: 4, unit: "piece", expireDate: "2022-10-15" },
-//     ],
-//   ],
-// ]);
 
 const nodeAppUrl = "http://localhost:3000";
 
-function createRequest(method: string, data?: Food): AxiosRequestConfig {
-  const requestConfig: AxiosRequestConfig = {
-    method,
-    headers: { "Content-Type": "application/json" },
-    data: data,
-  };
-  return requestConfig;
-}
+const foodList: Food[] = reactive([]);
 
-async function getInitialFoodList(method: string = "GET"): Promise<Food[]> {
+// READ
+async function getCurrentFoodListFromDB(): Promise<Food[]> {
   const foodInDB = await axios.get(nodeAppUrl);
-
   return foodInDB.data;
 }
 
-async function updateDB(): Promise<void> {}
+async function readDBAndUpdateFoodList() {
+  const result = await getCurrentFoodListFromDB();
+  foodList.length = 0;
+  foodList.push(...result);
+}
 
-const foodList: Food[] = reactive([]);
-// foodList.map((food) => delete (food as any)._id);
-
-function incrementPortion(food: Food) {
-  const method = "POST";
-
+// WRITE
+async function incrementPortion(food: Food) {
   const incrementAmount = food.unit === "gram" ? 100 : 1;
 
   console.log(" + ", food);
-  food.amount += incrementAmount;
+  // food.amount += incrementAmount;
+  const incrementResult = await axios.post(nodeAppUrl, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    data: { name: food.name, update: { $inc: { amount: incrementAmount } } },
+  });
+  console.log({ incrementResult });
+  if (incrementResult.status === 200) {
+    // TODO: only read and update the incremented food item
+    await readDBAndUpdateFoodList();
+  }
 }
 
-function decrementPortion(food: Food) {
+async function decrementPortion(food: Food) {
   const decrementAmount = food.unit === "gram" ? 100 : 1;
 
   console.log(" - ", food);
-  food.amount -= decrementAmount;
+
+  const decrementResult = await axios.post(nodeAppUrl, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    data: { name: food.name, update: { $inc: { amount: -decrementAmount } } },
+  });
+  console.log({ decrementResult });
+  if (decrementResult.status === 200) {
+    // TODO: only read and update the decremented food item
+    await readDBAndUpdateFoodList();
+  }
 }
 
-function deleteItem(food: Food) {
-  const foodIndex = foodList.indexOf(food);
-  foodList.splice(foodIndex, 1);
-}
+async function deleteItem(food: Food) {
+  const deletedResult = await axios.delete(nodeAppUrl, {
+    headers: { "Content-Type": "application/json" },
+    method: "DELETE",
+    data: food,
+  });
 
-async function init() {
-  const result = await getInitialFoodList();
-  foodList.length = 0;
-  foodList.push(...result);
+  console.log({ deletedResult });
+  if (deletedResult.status === 200) {
+    await readDBAndUpdateFoodList();
+  }
 }
 
 async function addNewFood() {
@@ -90,16 +88,18 @@ async function addNewFood() {
   const expireMonth = expireDate.slice(4, 6);
   const expireDay = expireDate.slice(6, 8);
 
-  console.log("==> trying");
-
-  const addNewFoodResult = await axios.put(nodeAppUrl, {
+  const newFoodItem: Food = {
     name,
     amount: Number(amount),
     unit: unit.startsWith("p") ? "piece" : "gram",
     expireDate: `${expireYear}-${expireMonth}-${expireDay}`,
-  });
+  };
+  const addNewFoodResult = await axios.put(nodeAppUrl, newFoodItem);
   console.log({ addNewFoodResult });
-  foodList.push();
+
+  if (addNewFoodResult.data.acknowledged) {
+    await readDBAndUpdateFoodList();
+  }
 }
 </script>
 
@@ -131,7 +131,7 @@ async function addNewFood() {
       placeholder="garlic,5,piece,20221010"
     />
     <button @click="addNewFood">Add new food</button>
-    <button @click="init">INIT</button>
+    <button @click="readDBAndUpdateFoodList">Load Food List</button>
   </div>
 </template>
 
